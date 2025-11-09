@@ -25,6 +25,8 @@ namespace RestaurantSimulation
         private readonly Dictionary<Guid, UIElement> _newOrderTokenShapes = new(); // зелёный  у стола
         private readonly Dictionary<Guid, UIElement> _readyDishTokenShapes = new(); // красный заказ
 
+
+
         public MainWindow()
         {
             InitializeComponent();
@@ -51,7 +53,7 @@ namespace RestaurantSimulation
             return v;
         }
 
-        private void InitWorld()-
+        private void InitWorld()
         {
             // Зоны Fast Food Simulator
             // Зона заказов (слева)
@@ -312,27 +314,49 @@ namespace RestaurantSimulation
             if (_readyDishTokenShapes.Remove(e.Id, out var ro)) WorldCanvas.Children.Remove(ro);
         }
 
+
+        private const int MaxOrderQueue = 4; // порог перегрузки
+        private bool _queueOverloadNotified = false;
+
         private void OnStatisticsUpdated(object? _, SimulationStatistics s)
         {
+            // Обновляем UI
             OrderQueueText.Text = s.OrderQueueCount.ToString();
 
-            // Отображаем список готовящихся заказов
             CookingOrderText.Text = s.CurrentCookingOrders.Count > 0
                 ? string.Join(", ", s.CurrentCookingOrders)
                 : "-";
 
             WaitingOrdersText.Text = s.WaitingOrdersCount.ToString();
 
-            // Отображаем список готовых заказов
             ReadyOrderText.Text = s.ReadyOrderNumbers.Count > 0
                 ? string.Join(", ", s.ReadyOrderNumbers)
                 : "-";
 
             PickupQueueText.Text = s.PickupQueueCount.ToString();
+
+            // Проверка перегрузки очереди заказов
+            if (!_queueOverloadNotified && s.OrderQueueCount > MaxOrderQueue)
+            {
+                _queueOverloadNotified = true;
+
+                // Останавливаем симуляцию
+                engine?.Stop();
+
+                // Показываем предупреждение
+                MessageBox.Show(this,
+                    $"Очередь заказов ({s.OrderQueueCount}) превысила порог {MaxOrderQueue}. Симуляция остановлена.",
+                    "Перегрузка очереди",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+            }
         }
 
-        // кнопки 
-        private void OnStartClick(object sender, RoutedEventArgs e)
+
+
+
+// кнопки 
+private void OnStartClick(object sender, RoutedEventArgs e)
         {
             engine.Config.CustomersPerMinute = GetInt(CustomersRateInput, 0, 30, 10);
             engine.Config.OrderTakers = GetInt(OrderTakerCountInput, 1, 3, 1);
@@ -341,6 +365,8 @@ namespace RestaurantSimulation
             engine.Config.CookingTime = GetInt(CookTimeInput, 1, 20, 5);
             engine.Config.OrderTakingTime = GetInt(OrderTakingTimeInput, 1, 10, 3); // Добавляем
             engine.Config.CustomersSpeed = GetDouble(CustomersSpeedInput, 30, 200, 90);
+            _queueOverloadNotified = false;
+
 
             engine.Start();
         }
@@ -352,6 +378,7 @@ namespace RestaurantSimulation
         private void OnResetClick(object sender, RoutedEventArgs e)
         {
             engine.Reset();
+            _queueOverloadNotified = false;
             WorldCanvas.Children.Clear();
             _customerShapes.Clear(); _waiterShapes.Clear();
             _newOrderTokenShapes.Clear(); _readyDishTokenShapes.Clear();
