@@ -1,0 +1,173 @@
+﻿<Window x:Class="RestaurantSimulation.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="🍔 Fast Food Simulation"
+        Width="1080" Height="650"
+        WindowStartupLocation="CenterScreen"
+        Background="#FFF7F8FA">
+
+	<Window.Resources>
+		<!-- 🎨 Стиль для текстовых полей -->
+		<Style x:Key="InputBoxStyle" TargetType="TextBox">
+			<Setter Property="Background" Value="#FFFFFFFF"/>
+			<Setter Property="Foreground" Value="#FF333333"/>
+			<Setter Property="BorderBrush" Value="#FFB0BEC5"/>
+			<Setter Property="BorderThickness" Value="1"/>
+			<Setter Property="Padding" Value="4,2"/>
+			<Setter Property="Margin" Value="2"/>
+			<Setter Property="FontSize" Value="13"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="TextBox">
+						<Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="5">
+							<ScrollViewer x:Name="PART_ContentHost" Margin="0"/>
+						</Border>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+			<Style.Triggers>
+				<Trigger Property="IsFocused" Value="True">
+					<Setter Property="BorderBrush" Value="#FF4FC3F7"/>
+					<Setter Property="BorderThickness" Value="2"/>
+				</Trigger>
+			</Style.Triggers>
+		</Style>
+
+		<!-- 🌟 Стиль кнопок -->
+		<Style x:Key="AccentButtonStyle" TargetType="Button">
+			<Setter Property="Margin" Value="5"/>
+			<Setter Property="Padding" Value="10,6"/>
+			<Setter Property="FontWeight" Value="Bold"/>
+			<Setter Property="Foreground" Value="White"/>
+			<Setter Property="Background" Value="#FF4FC3F7"/>
+			<Setter Property="BorderThickness" Value="0"/>
+			<Setter Property="Cursor" Value="Hand"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="Button">
+						<Border Background="{TemplateBinding Background}"
+                                CornerRadius="8">
+							<ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+						</Border>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+			<Style.Triggers>
+				<Trigger Property="IsMouseOver" Value="True">
+					<Setter Property="Opacity" Value="0.85"/>
+				</Trigger>
+				<Trigger Property="IsPressed" Value="True">
+					<Setter Property="Opacity" Value="0.7"/>
+				</Trigger>
+			</Style.Triggers>
+		</Style>
+
+		<!-- 💧 Эффект тени -->
+		<DropShadowEffect x:Key="DropShadow" Color="#55000000"
+                          BlurRadius="10" ShadowDepth="2" Opacity="0.4"/>
+	</Window.Resources>
+
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="2*"/>
+			<ColumnDefinition Width="*"/>
+		</Grid.ColumnDefinitions>
+
+		<!-- 🎮 Сцена -->
+		<Border Grid.Column="0" Margin="8" CornerRadius="12"
+                Background="#FFFDFDFD"
+                BorderBrush="#FFCFD8DC"
+                BorderThickness="2"
+                Effect="{StaticResource DropShadow}">
+			<Canvas Name="WorldCanvas" Background="#FFF4F6F8"/>
+		</Border>
+
+		<!-- ⚙ Панель управления -->
+		<Border Grid.Column="1" Margin="8" CornerRadius="15" Padding="15"
+                Background="#FFFFFFFF"
+                BorderBrush="#FFCFD8DC"
+                BorderThickness="2"
+                Effect="{StaticResource DropShadow}">
+			<ScrollViewer VerticalScrollBarVisibility="Auto">
+				<StackPanel>
+					<TextBlock Text="🍟 FAST FOOD SIMULATOR"
+                               FontSize="22"
+                               FontWeight="Bold"
+                               Foreground="#FF37474F"
+                               Margin="0,0,0,15"
+                               TextAlignment="Center"/>
+
+					<!-- Ввод параметров -->
+					<UniformGrid Columns="2" Margin="0,8,0,0">
+						<TextBlock Text="👥 Клиентов/мин:" VerticalAlignment="Center" Foreground="#FF455A64"/>
+						<TextBox x:Name="CustomersRateInput" Text="10" Style="{StaticResource InputBoxStyle}" ToolTip="0..30"/>
+
+						<TextBlock Text="👨‍💼 Официантов:" VerticalAlignment="Center" Foreground="#FF455A64"/>
+						<TextBox x:Name="OrderTakerCountInput" Text="1" Style="{StaticResource InputBoxStyle}" ToolTip="1..3"/>
+
+						<TextBlock Text="👨‍🍳 Поваров:" VerticalAlignment="Center" Foreground="#FF455A64"/>
+						<TextBox x:Name="ChefCountInput" Text="2" Style="{StaticResource InputBoxStyle}" ToolTip="1..6"/>
+
+						<TextBlock Text="⏱ Время готовки (с):" VerticalAlignment="Center" Foreground="#FF455A64"/>
+						<TextBox x:Name="CookTimeInput" Text="5" Style="{StaticResource InputBoxStyle}" ToolTip="1..20"/>
+
+						<TextBlock Text="⏱ Приём заказа (с):" VerticalAlignment="Center" Foreground="#FF455A64"/>
+						<TextBox x:Name="OrderTakingTimeInput" Text="3" Style="{StaticResource InputBoxStyle}" ToolTip="1..10"/>
+
+						<TextBlock Text="🚶 Скорость клиентов:" VerticalAlignment="Center" Foreground="#FF455A64"/>
+						<TextBox x:Name="CustomersSpeedInput" Text="90" Style="{StaticResource InputBoxStyle}" ToolTip="30..200"/>
+					</UniformGrid>
+
+					<!-- Кнопки -->
+					<StackPanel Orientation="Horizontal" Margin="0,20,0,0" HorizontalAlignment="Center">
+						<Button Content="▶ Старт" Click="OnStartClick" Style="{StaticResource AccentButtonStyle}" Background="#FF81C784"/>
+						<Button Content="⏸ Пауза" Click="OnStopClick" Style="{StaticResource AccentButtonStyle}" Background="#FFFFB74D"/>
+						<Button Content="🔄 Сброс" Click="OnResetClick" Style="{StaticResource AccentButtonStyle}" Background="#FFE57373"/>
+					</StackPanel>
+
+					<!-- Статистика -->
+					<Border Margin="0,20,0,10" Background="#FFF7F8FA" CornerRadius="10" Padding="10">
+						<StackPanel>
+							<TextBlock Text="📊 СТАТИСТИКА" FontWeight="Bold" FontSize="16" Foreground="#FF37474F" Margin="0,0,0,8" TextAlignment="Center"/>
+							<UniformGrid Columns="2">
+								<TextBlock Text="👥 Очередь заказов:" Foreground="#FF455A64"/>
+								<TextBlock x:Name="OrderQueueText" Text="0" Foreground="#FF388E3C" FontWeight="Bold"/>
+								<TextBlock Text="🍳 Готовятся:" Foreground="#FF455A64"/>
+								<TextBlock x:Name="CookingOrderText" Text="-" Foreground="#FFFB8C00" FontWeight="Bold"/>
+								<TextBlock Text="⏳ Ожидают:" Foreground="#FF455A64"/>
+								<TextBlock x:Name="WaitingOrdersText" Text="0" Foreground="#FFD32F2F" FontWeight="Bold"/>
+								<TextBlock Text="📦 Готовы:" Foreground="#FF455A64"/>
+								<TextBlock x:Name="ReadyOrderText" Text="-" Foreground="#FF0288D1" FontWeight="Bold"/>
+								<TextBlock Text="👥 Очередь выдачи:" Foreground="#FF455A64"/>
+								<TextBlock x:Name="PickupQueueText" Text="0" Foreground="#FF6A1B9A" FontWeight="Bold"/>
+							</UniformGrid>
+						</StackPanel>
+					</Border>
+
+					<!-- Легенда -->
+					<Border Background="#FFF7F8FA" CornerRadius="10" Padding="10">
+						<StackPanel>
+							<TextBlock Text="🔷 УСЛОВНЫЕ ОБОЗНАЧЕНИЯ"
+                                       FontWeight="Bold" FontSize="16"
+                                       Foreground="#FF37474F"
+                                       Margin="0,0,0,8" TextAlignment="Center"/>
+							<TextBlock Text="🔵 К — Клиент" Foreground="#FF455A64"/>
+							<TextBlock Text="🟢 О — Официант" Foreground="#FF455A64"/>
+							<TextBlock Text="🟣 П — Повар" Foreground="#FF455A64"/>
+							<TextBlock Text="🟠 С — Сервер" Foreground="#FF455A64"/>
+							<TextBlock Text="🔴 Красный = Новый заказ" Foreground="#FF455A64"/>
+							<TextBlock Text="🟢 Зелёный = Готовое блюдо" Foreground="#FF455A64"/>
+							<TextBlock Text="🟡 Зоны: 🟨 Заказы | 🟪 Кухня | 🟥 Выдача"
+                                       Foreground="#FF757575" FontWeight="Bold" Margin="4,6,0,0"
+                                       TextAlignment="Center"/>
+						</StackPanel>
+					</Border>
+				</StackPanel>
+			</ScrollViewer>
+		</Border>
+	</Grid>
+</Window>
