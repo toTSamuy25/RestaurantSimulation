@@ -9,6 +9,9 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
+
+// some changes
+
 namespace RestaurantSimulation
 {
     public partial class MainWindow : Window
