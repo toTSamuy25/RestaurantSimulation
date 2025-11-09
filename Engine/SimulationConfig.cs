@@ -14,6 +14,9 @@ namespace RestaurantSimulation.Engine
         public int Servers { get; set; } = 1;
         public int CookingTime { get; set; } = 5;
         public int OrderTakingTime { get; set; } = 3; // Добавляем время принятия заказа
-        public double CustomersSpeed { get; set; } = 90;
+
+        public double CustomersSpeed { get; set; } = 1;
+        public double AnimationSpeedMultiplier => 1.0 / CustomersSpeed;
+
     }
 }

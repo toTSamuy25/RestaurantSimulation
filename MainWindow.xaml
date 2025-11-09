@@ -119,7 +119,7 @@
 						<TextBox x:Name="OrderTakingTimeInput" Text="3" Style="{StaticResource InputBoxStyle}" ToolTip="1..10"/>
 
 						<TextBlock Text="🚶 Скорость клиентов:" VerticalAlignment="Center" Foreground="#FF455A64"/>
-						<TextBox x:Name="CustomersSpeedInput" Text="90" Style="{StaticResource InputBoxStyle}" ToolTip="30..200"/>
+						<TextBox x:Name="CustomersSpeedInput" Text="1" Style="{StaticResource InputBoxStyle}" ToolTip="30..200"/>
 					</UniformGrid>
 
 					<!-- Кнопки -->

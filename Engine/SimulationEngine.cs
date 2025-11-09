@@ -63,6 +63,12 @@ namespace RestaurantSimulation.Engine
 
         private bool _isRunning = false;
 
+        private double GetEntitySpeed(double baseSpeed)
+        {
+            return baseSpeed * Config.AnimationSpeedMultiplier; // baseSpeed в пикселях/сек
+        }
+
+
         public void Start()
         {
             if (!_isRunning)
@@ -161,8 +167,7 @@ namespace RestaurantSimulation.Engine
         {
             foreach (var customer in _customers.ToList())
             {
-                FollowPath(customer, customer.MovementRoute, Config.CustomersSpeed, dt);
-
+                FollowPath(customer, customer.MovementRoute, GetEntitySpeed(90), dt);
                 switch (customer.CurrentStatus)
                 {
                     case CustomerState.InOrderQueue:
@@ -204,8 +209,7 @@ namespace RestaurantSimulation.Engine
         {
             foreach (var orderTaker in _orderTakers)
             {
-                FollowPath(orderTaker, orderTaker.MovementRoute, 200, dt);
-
+                FollowPath(orderTaker, orderTaker.MovementRoute, GetEntitySpeed(200), dt);
                 if (orderTaker.CurrentStatus == OrderTakerState.Idle)
                 {
                     // Ищем клиента в очереди заказов, который еще не назначен официанту

@@ -25,6 +25,14 @@ namespace RestaurantSimulation
         private readonly Dictionary<Guid, UIElement> _newOrderTokenShapes = new(); // зелёный  у стола
         private readonly Dictionary<Guid, UIElement> _readyDishTokenShapes = new(); // красный заказ
 
+        // Внутри класса MainWindow, рядом с другими private полями
+        private double _animationSpeed = 1.0; // множитель скорости анимации
+        private double _animationInterval = 1.0; // интервал в секундах, введённый пользователем
+
+
+
+
+
 
 
         public MainWindow()
@@ -42,16 +50,18 @@ namespace RestaurantSimulation
             tb.Text = v.ToString(CultureInfo.CurrentCulture);
             return v;
         }
-       
+
         private double GetDouble(TextBox tb, double min, double max, double fallback)
         {
             if (!double.TryParse(tb.Text, NumberStyles.Float, CultureInfo.CurrentCulture, out var v))
                 if (!double.TryParse(tb.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out v))
                     v = fallback;
-            v = Math.Clamp(v, min, max);
+
+            v = Math.Clamp(v, min, max); // <- вот здесь происходит обрезка
             tb.Text = v.ToString(CultureInfo.CurrentCulture);
             return v;
         }
+
 
         private void InitWorld()
         {
@@ -105,7 +115,7 @@ namespace RestaurantSimulation
                 Servers = 1,
                 CookingTime = GetInt(CookTimeInput, 1, 20, 5),
                 OrderTakingTime = GetInt(OrderTakingTimeInput, 1, 10, 3), // Добавляем
-                CustomersSpeed = GetDouble(CustomersSpeedInput, 30, 200, 90)
+                CustomersSpeed = GetDouble(CustomersSpeedInput, 0.1, 10, 1)
             });
 
             // вешаем обработчики
@@ -345,7 +355,7 @@ namespace RestaurantSimulation
 
                 // Показываем предупреждение
                 MessageBox.Show(this,
-                    $"Очередь заказов ({s.OrderQueueCount}) превысила порог {MaxOrderQueue}. Симуляция остановлена.",
+                    $"Очередь заказов ({s.OrderQueueCount}) превысила порог {MaxOrderQueue}. Симуляция остановлена. Иди нафиг",
                     "Перегрузка очереди",
                     MessageBoxButton.OK,
                     MessageBoxImage.Warning);
@@ -355,21 +365,24 @@ namespace RestaurantSimulation
 
 
 
-// кнопки 
-private void OnStartClick(object sender, RoutedEventArgs e)
+        // кнопки 
+        private void OnStartClick(object sender, RoutedEventArgs e)
         {
             engine.Config.CustomersPerMinute = GetInt(CustomersRateInput, 0, 30, 10);
             engine.Config.OrderTakers = GetInt(OrderTakerCountInput, 1, 3, 1);
             engine.Config.Chefs = GetInt(ChefCountInput, 1, 6, 2);
             engine.Config.Servers = 1;
             engine.Config.CookingTime = GetInt(CookTimeInput, 1, 20, 5);
-            engine.Config.OrderTakingTime = GetInt(OrderTakingTimeInput, 1, 10, 3); // Добавляем
-            engine.Config.CustomersSpeed = GetDouble(CustomersSpeedInput, 30, 200, 90);
-            _queueOverloadNotified = false;
+            engine.Config.OrderTakingTime = GetInt(OrderTakingTimeInput, 1, 10, 3);
+
+            // Скорость анимации: секунды на путь
+            engine.Config.CustomersSpeed = GetDouble(CustomersSpeedInput, 0.1, 10, 1);
 
 
             engine.Start();
         }
+
+
         private void OnStopClick(object sender, RoutedEventArgs e)
         {
             engine.Stop();
@@ -426,5 +439,17 @@ private void OnStartClick(object sender, RoutedEventArgs e)
                 }
             }
         }
+
+
+        private void UpdateAnimationSpeed()
+        {
+            // Пример: вводим "секунды на путь" -> чем меньше значение, тем быстрее движение
+            double inputSeconds = GetDouble(CustomersSpeedInput, 0.1, 10, 1); // 0.1–10 секунд
+                                                                              // Переводим в множитель скорости (чем меньше inputSeconds, тем больше _animationSpeed)
+            _animationSpeed = 1.0 / inputSeconds;
+        }
     }
+
 }
+
+
