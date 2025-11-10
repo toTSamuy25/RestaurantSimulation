@@ -67,42 +67,86 @@ namespace RestaurantSimulation
         {
             // Зоны Fast Food Simulator
             // Зона заказов (слева)
+            // === Зона заказов ===
             var orderArea = new Rectangle
             {
                 Width = 150,
                 Height = 300,
-                Fill = new SolidColorBrush(Color.FromRgb(224, 247, 250)),   // #E0F7FA — светло-голубой
-                Stroke = new SolidColorBrush(Color.FromRgb(77, 208, 225)),  // #4DD0E1 — голубая рамка
+                Fill = new SolidColorBrush(Color.FromRgb(255, 220, 150)), // светло-оранжевый
+                Stroke = new SolidColorBrush(Color.FromRgb(255, 167, 38)),
                 StrokeThickness = 3,
-                Opacity = 0.8
+                Opacity = 0.6
             };
-            Canvas.SetLeft(orderArea, 50); Canvas.SetTop(orderArea, 50); 
+            Canvas.SetLeft(orderArea, 50);
+            Canvas.SetTop(orderArea, 100);
             WorldCanvas.Children.Add(orderArea);
 
-            // Кухня (центр)
+            // Текст для зоны заказов
+            var orderLabel = new TextBlock
+            {
+                Text = "🟨 Зона заказов",
+                FontSize = 14,
+                FontWeight = FontWeights.Bold,
+                Foreground = new SolidColorBrush(Color.FromRgb(80, 60, 0))
+            };
+            Canvas.SetLeft(orderLabel, 60);
+            Canvas.SetTop(orderLabel, 80);
+            WorldCanvas.Children.Add(orderLabel);
+
+
+            // === Кухня ===
             var kitchen = new Rectangle
             {
                 Width = 200,
                 Height = 200,
-                Fill = new SolidColorBrush(Color.FromRgb(200, 230, 201)),   // #C8E6C9 — светло-зелёный
-                Stroke = new SolidColorBrush(Color.FromRgb(129, 199, 132)), // #81C784 — зелёная рамка
+                Fill = new SolidColorBrush(Color.FromRgb(180, 180, 255)), // светло-фиолетовый
+                Stroke = new SolidColorBrush(Color.FromRgb(108, 92, 231)),
                 StrokeThickness = 3,
-                Opacity = 0.8
+                Opacity = 0.7
             };
-            Canvas.SetLeft(kitchen, 250); Canvas.SetTop(kitchen, 100); WorldCanvas.Children.Add(kitchen);
+            Canvas.SetLeft(kitchen, 250);
+            Canvas.SetTop(kitchen, 100);
+            WorldCanvas.Children.Add(kitchen);
 
-            // Зона выдачи (справа)
+            // Текст для кухни
+            var kitchenLabel = new TextBlock
+            {
+                Text = "🟪 Кухня",
+                FontSize = 14,
+                FontWeight = FontWeights.Bold,
+                Foreground = new SolidColorBrush(Color.FromRgb(40, 40, 120))
+            };
+            Canvas.SetLeft(kitchenLabel, 270);
+            Canvas.SetTop(kitchenLabel, 80);
+            WorldCanvas.Children.Add(kitchenLabel);
+
+
+            // === Зона выдачи (сервер) ===
             var serving = new Rectangle
             {
                 Width = 150,
                 Height = 300,
-                Fill = new SolidColorBrush(Color.FromRgb(255, 249, 196)),   // #FFF9C4 — пастельно-жёлтый
-                Stroke = new SolidColorBrush(Color.FromRgb(255, 241, 118)), // #FFF176 — жёлтая рамка
+                Fill = new SolidColorBrush(Color.FromRgb(255, 200, 200)), // светло-красный
+                Stroke = new SolidColorBrush(Color.FromRgb(214, 48, 49)),
                 StrokeThickness = 3,
-                Opacity = 0.8
+                Opacity = 0.7
             };
+            Canvas.SetLeft(serving, 500);
+            Canvas.SetTop(serving, 100);
+            WorldCanvas.Children.Add(serving);
 
-            Canvas.SetLeft(serving, 500); Canvas.SetTop(serving, 50); WorldCanvas.Children.Add(serving);
+            // Текст для зоны выдачи
+            var servingLabel = new TextBlock
+            {
+                Text = "🟥 Зона выдачи",
+                FontSize = 14,
+                FontWeight = FontWeights.Bold,
+                Foreground = new SolidColorBrush(Color.FromRgb(120, 0, 0))
+            };
+            Canvas.SetLeft(servingLabel, 510);
+            Canvas.SetTop(servingLabel, 80);
+            WorldCanvas.Children.Add(servingLabel);
+
 
             WorldCanvas.Children.Add(Marker(30, 400, Brushes.Lime, "ВХОД"));
             WorldCanvas.Children.Add(Marker(600, 400, Brushes.Tomato, "ВЫХОД"));
