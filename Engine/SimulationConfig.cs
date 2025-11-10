@@ -8,15 +8,19 @@ namespace RestaurantSimulation.Engine
 {
     public class SimulationConfig
     {
-        public int CustomersPerMinute { get; set; } = 10;
-        public int OrderTakers { get; set; } = 1;
-        public int Chefs { get; set; } = 2;
-        public int Servers { get; set; } = 1;
-        public int CookingTime { get; set; } = 5;
-        public int OrderTakingTime { get; set; } = 3; // Добавляем время принятия заказа
+        public int CustomersPerMinute { get; set; }
+        public int OrderTakers { get; set; }
+        public int Chefs { get; set; }
+        public int Servers { get; set; }
+        public int CookingTime { get; set; }
+        public int OrderTakingTime { get; set; }
 
-        public double CustomersSpeed { get; set; } = 1;
-        public double AnimationSpeedMultiplier => 1.0 / CustomersSpeed;
+        // Скорость движения клиентов/официантов
+        public double CustomersSpeed { get; set; }
 
+        // Множитель для анимации (зависит от скорости)
+        public double AnimationSpeedMultiplier =>
+            CustomersSpeed > 0 ? 1.0 / CustomersSpeed : 1.0;
     }
 }
+

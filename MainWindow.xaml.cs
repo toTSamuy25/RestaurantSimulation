@@ -43,24 +43,30 @@ namespace RestaurantSimulation
 
         private int GetInt(TextBox tb, int min, int max, int fallback)
         {
-            if (!int.TryParse(tb.Text, NumberStyles.Integer, CultureInfo.CurrentCulture, out var v))
-                if (!int.TryParse(tb.Text, NumberStyles.Integer, CultureInfo.InvariantCulture, out v))
-                    v = fallback;
-            v = Math.Clamp(v, min, max);
+            if (!int.TryParse(tb.Text, NumberStyles.Integer, CultureInfo.CurrentCulture, out var v) &&
+                !int.TryParse(tb.Text, NumberStyles.Integer, CultureInfo.InvariantCulture, out v))
+            {
+                v = fallback;
+            }
+
+            // 🔸 Никаких ограничений
             tb.Text = v.ToString(CultureInfo.CurrentCulture);
             return v;
         }
 
         private double GetDouble(TextBox tb, double min, double max, double fallback)
         {
-            if (!double.TryParse(tb.Text, NumberStyles.Float, CultureInfo.CurrentCulture, out var v))
-                if (!double.TryParse(tb.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out v))
-                    v = fallback;
+            if (!double.TryParse(tb.Text, NumberStyles.Float, CultureInfo.CurrentCulture, out var v) &&
+                !double.TryParse(tb.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out v))
+            {
+                v = fallback;
+            }
 
-            v = Math.Clamp(v, min, max); // <- вот здесь происходит обрезка
+            // 🔸 Убираем Math.Clamp — теперь можно вводить любое значение
             tb.Text = v.ToString(CultureInfo.CurrentCulture);
             return v;
         }
+
 
 
         private void InitWorld()
@@ -412,19 +418,25 @@ namespace RestaurantSimulation
         // кнопки 
         private void OnStartClick(object sender, RoutedEventArgs e)
         {
-            engine.Config.CustomersPerMinute = GetInt(CustomersRateInput, 0, 30, 10);
-            engine.Config.OrderTakers = GetInt(OrderTakerCountInput, 1, 3, 1);
-            engine.Config.Chefs = GetInt(ChefCountInput, 1, 6, 2);
-            engine.Config.Servers = 1;
-            engine.Config.CookingTime = GetInt(CookTimeInput, 1, 20, 5);
-            engine.Config.OrderTakingTime = GetInt(OrderTakingTimeInput, 1, 10, 3);
+            try
+            {
+                // Берём значения напрямую, без ограничений
+                engine.Config.CustomersPerMinute = GetInt(CustomersRateInput, 0, 0, 0);
+                engine.Config.OrderTakers = GetInt(OrderTakerCountInput, 0, 0, 0);
+                engine.Config.Chefs = GetInt(ChefCountInput, 0, 0, 0);
+                engine.Config.Servers = 1;
+                engine.Config.CookingTime = GetInt(CookTimeInput, 0, 0, 0);
+                engine.Config.OrderTakingTime = GetInt(OrderTakingTimeInput, 0, 0, 0);
+                engine.Config.CustomersSpeed = GetDouble(CustomersSpeedInput, 0, 0, 0);
 
-            // Скорость анимации: секунды на путь
-            engine.Config.CustomersSpeed = GetDouble(CustomersSpeedInput, 0.1, 10, 1);
-
-
-            engine.Start();
+                engine.Start();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при запуске симуляции: {ex.Message}");
+            }
         }
+
 
 
         private void OnStopClick(object sender, RoutedEventArgs e)
